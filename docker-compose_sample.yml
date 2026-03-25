@@ -1,0 +1,11 @@
+services:
+  presentations:
+    build: .
+    container_name: presentations
+    hostname: presentations.mydomain.com
+    environment:
+      - VIRTUAL_HOST=presentations.mydomain.com
+      - VIRTUAL_PORT=80
+    restart: always
+    volumes:
+      - "./data:/app/data/"

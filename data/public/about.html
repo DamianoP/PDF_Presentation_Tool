@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <title>About PDF Presentation Tool</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+        max-width: 900px;
+        margin: auto;
+        padding: 2em;
+        line-height: 1.6;
+        color: #e6edf3;
+        background: #0d1117;
+      }
+      
+      a {
+        color: #58a5ff;
+        text-decoration: none;
+      }
+      
+      a:hover {
+        text-decoration: underline;
+      }
+      
+      h1 {
+        font-size: 2.2em;
+        margin-bottom: 0.5em;
+        color: #fff;
+      }
+      
+      h2 {
+        margin-top: 1.8em;
+        font-size: 1.5em;
+        border-bottom: 1px solid #30363d;
+        padding-bottom: 0.3em;
+        color: #fff;
+      }
+      
+      /* Image Placeholder Styling */
+      .image-placeholder {
+        width: 100%;
+        max-width: 750px;
+        height: 350px;
+        background: #161b22;
+        border: 2px dashed #484f58;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 2.5em auto;
+        color: #8b949e;
+        font-style: italic;
+        text-align: center;
+        padding: 1.5em;
+        box-sizing: border-box;
+      }
+      
+      ul {
+        margin-left: 1.5em;
+      }
+      
+      li {
+        margin-bottom: 0.8em;
+      }
+      
+      .footer {
+        margin-top: 4em;
+        border-top: 1px solid #30363d;
+        padding-top: 1em;
+        text-align: center;
+        font-size: 0.9em;
+        color: #8b949e;
+      }
+      
+      strong {
+        color: #ffb5b5;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="topLeft">
+      <a href="https://presentations.damianoperri.it"> ← Back</a>
+    </div>
+    <h1>About PDF Presentation Tool</h1>
+    <p>
+      Welcome to <strong><a href="https://presentations.damianoperri.it">PDF Presentation Tool</a></strong>, a modern, browser-based ecosystem designed to revolutionize the way you deliver dual-monitor presentations.
+    </p>
+
+    <!-- Insert Main Screenshot here. For example: 
+      <div class="image-placeholder">
+      [Placeholder: Insert a high-quality screenshot or short GIF showing the Presenter View with Thumbnails and Slide Preview]
+    </div>
+    -->
+    <img src="assets/img-presenter.webp" alt="Presenter View" style="max-width: 100%; border-radius: 8px; margin: 2em auto;margin-bottom:10px; display: block;"> 
+    <p style="text-align: center; font-size: 0.9em; color: #8b949e; margin-top: 10px;">Presenter User Interface</p>
+    <h2>The Problem</h2>
+    <p>
+      Delivering a professional presentation often requires compromising on control or privacy. Presenting a standard PDF file on two screens typically causes the speaker to lose access to their personal notes, or forces them to awkwardly mirror the display. While specialized LaTeX formats like Beamer allow for split-mode notes, finding software that can reliably display the slide to the audience while keeping the notes strictly on the presenter's screen is notoriously difficult. 
+    </p>
+    <p>
+      Historically, presenters have been forced to choose between installing heavy, bloated desktop applications or uploading their sensitive, private slide decks to third-party cloud services just to get a decent dual-screen view. I built PDF Presentation Tool to break this compromise.
+    </p>
+
+    <h2>The Solution</h2>
+    <p>
+      PDF Presentation Tool is a powerful, offline-capable application that runs entirely within your web browser. There is no software to install, no accounts to create, and no file uploads required. Your media files whether they are PDFs, Images, or Videos are processed securely and locally by your computer's own hardware. 
+    </p>
+    <p>
+      By simply connecting to a secondary screen and clicking "Present", the system instantly orchestrates a flawless dual-screen interaction, offering a private control dashboard for the speaker and a clean, distraction-free view for the audience.
+    </p>
+
+    <h2>Key Features</h2>
+    <ul>
+      <li><strong>Beamer and Split-Note Support:</strong> Automatically detects split-mode PDFs, elegantly rendering the slide for the audience while displaying your private notes exclusively on the presenter view.</li>
+      <li><strong>Phone Remote Control:</strong> Step away from the podium. Scan a QR code directly from your browser to instantly turn your personal smartphone into a responsive remote control.</li>
+      <li><strong>Live Q&A Sessions:</strong> Engage your audience actively. Attendees can scan a QR code from the projection screen to ask anonymous questions, which are instantly delivered to your private dashboard.</li>
+      <li><strong>Interactive Presenter Tools:</strong> Captivate the room using a virtual Laser Pointer, a local Spotlight effect, interactive Canvas Drawing for whiteboard annotations, and real-time Zoom tracking.</li>
+      <li><strong>Media Agnostic Workflow:</strong> Effortlessly present standard PDFs, Videos, and Images within the exact same interface, eliminating the need to switch applications mid-speech.</li>
+      <li><strong>Webcam Integration:</strong> Seamlessly broadcast your local webcam feed as a floating bubble over your slides, which is ideal for hybrid presentations or recorded lectures.</li>
+      <li><strong>Live subtitles:</strong> Generate subtitles in real-time and display them on the audience's screen. This feature do not require any additional software or plugins and doesn't send data to the server. Chrome is the only browser supported.</li>
+      <li><strong>Session recording: </strong> Record your presentation and save it as a video file. This feature do not require any additional software or plugins and doesn't send data to the server.</li>
+      <li><strong>Session Management:</strong> Maintain absolute timing with built-in break timers, elapsed duration tracking, and a one-click blackout screen to gracefully pause the presentation.</li>
+    </ul>
+
+    <img src="assets/img-remote.webp" alt="Phone Remote Control Interface" style="max-width: 100%;max-height: 70vh; border-radius: 8px; margin: 2em auto; margin-bottom:10px; display: block;">
+    <!-- caption --> 
+    <p style="text-align: center; font-size: 0.9em; color: #8b949e; margin-top: 10px;">Phone Remote Control Interface</p>
+
+
+    <h2>Open Source and Privacy First</h2>
+    <p>
+      I strongly believe that professional educational tools should be accessible, transparent, and respectful of user data. That is why PDF Presentation Tool is built with a fundamentally privacy-first architecture. Because the application processes everything on the client-side, your slides and proprietary data never leave your device.
+    </p>
+    <p>
+      Furthermore, I am excited to announce that <strong>the entire source has been released as Open Source</strong>. 
+      This will allow developers and educators from around the world to audit the privacy mechanics and contribute developing new features.
+      Link to the official repository: <a href="https://github.com/DamianoP/pdf_Presentation_Tool" target="_blank" rel="noopener noreferrer">https://github.com/DamianoP/pdf_Presentation_Tool</a>
+    </p>
+
+    <img src="assets/img-bubble.webp" alt="Webcam Bubble Interface" style="max-width: 100%;max-height: 70vh; border-radius: 8px; margin: 2em auto;margin-bottom:10px; display: block;">
+    <!-- caption --> 
+    <p style="text-align: center; font-size: 0.9em; color: #8b949e; margin-top: 10px;">Webcam Bubble Interface, drawing on the slides</p>
+    
+    <br>
+
+    <img src="assets/img-torch.webp" alt="Torch tool" style="max-width: 100%;max-height: 70vh; border-radius: 8px; margin: 2em auto;margin-bottom:10px; display: block;">
+    <!-- caption --> 
+    <p style="text-align: center; font-size: 0.9em; color: #8b949e; margin-top: 10px;">The torch tool</p>
+
+    <br>
+    <br>
+    <div class="topLeft">
+      <a href="https://presentations.damianoperri.it"> ← Back</a>
+    </div>
+    
+
+    <div class="footer">
+      <p>Developed by <a href="https://damianoperri.it" target="_blank" rel="noopener noreferrer">Damiano Perri</a></p>
+      <p>Want to support the project? You can <a href="https://www.paypal.com/donate?hosted_button_id=6YW9SCCM7JB7L" target="_blank" rel="noopener noreferrer">buy me a coffee</a>.</p>
+    </div>
+  </body>
+</html>

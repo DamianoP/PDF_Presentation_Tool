@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Presentation</title>
+  <link rel="stylesheet" href="css/main.css">
+  <meta name="theme-color" content="#000000">
+</head>
+<body>
+  <div class="presentation-body">
+    <!-- Media layers -->
+    <canvas id="slide-canvas" class="slide-transition-fade"></canvas>
+    <video id="slide-video" class="slide-transition-fade" style="display:none; width: 100%; height: 100%; object-fit: contain; pointer-events: none;" muted></video>
+    <img id="slide-image" class="slide-transition-fade" style="display:none; width: 100%; height: 100%; object-fit: contain;">
+  </div>
+  <canvas id="draw-overlay" style="position: absolute; top: 0; left: 0; z-index: 2; pointer-events: none;"></canvas>
+  <div id="spotlight-overlay"></div>
+  <div id="blackout-overlay"></div>
+  <div id="audience-progress-bar"></div>
+
+  <!-- Captions overlay -->
+  <div id="captions-overlay" style="display:none;">
+    <div class="captions-text-box"></div>
+  </div>
+
+  <!-- Q&A overlay (shows QR code for audience to scan) -->
+  <div id="qa-overlay">
+    <div id="qa-overlay-content">
+      <div id="qa-overlay-title">Ask a Question</div>
+      <img id="qa-overlay-qr" alt="Scan to ask a question" class="qr-code-img">
+      <div id="qa-overlay-url"></div>
+    </div>
+  </div>
+
+  <!-- Break timer overlay -->
+  <div id="break-overlay">
+    <h1 id="break-title">Break Timer</h1>
+    <div id="break-countdown">
+      <span id="break-minutes">00</span><span class="break-unit">min</span>
+      <span id="break-seconds">00</span><span class="break-unit">sec</span>
+    </div>
+    <div id="break-progress-container">
+      <div id="break-progress-bar"></div>
+      <div id="break-progress-text">&nbsp;</div>
+    </div>
+  </div>
+
+  <!-- Webcam bubble -->
+  <video id="webcam-bubble" autoplay playsinline muted></video>
+
+  <!-- PDF.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+  <script type="module" src="js/presentation/index.js"></script>
+
+</body>
+</html>

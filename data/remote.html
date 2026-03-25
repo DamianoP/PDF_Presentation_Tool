@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0d1117">
+
+  <title>PDF Presentation Tool — Remote</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    /* ---- Header ---- */
+    .header {
+      padding: 1rem 1.2rem;
+      text-align: center;
+      flex-shrink: 0;
+      border-bottom: 1px solid #30363d;
+    }
+
+    .header h1 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #8b949e;
+      letter-spacing: .03em;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      margin-top: .4rem;
+      font-size: .85rem;
+      color: #8b949e;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #f85149;
+      transition: background .3s;
+    }
+
+    .status-dot.connected {
+      background: #3fb950;
+      box-shadow: 0 0 8px rgba(63, 185, 80, .5);
+    }
+
+    /* ---- Page indicator ---- */
+    .page-indicator {
+      text-align: center;
+      padding: 1.5rem 1rem;
+      flex-shrink: 0;
+    }
+
+    .page-current {
+      font-size: 4rem;
+      font-weight: 700;
+      line-height: 1;
+      color: #e6edf3;
+    }
+
+    .page-total {
+      font-size: 1.3rem;
+      color: #656d76;
+      margin-top: .2rem;
+    }
+
+    /* ---- Buttons ---- */
+    .buttons {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 12px 16px;
+      min-height: 0;
+    }
+
+    .btn-remote {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #30363d;
+      border-radius: 16px;
+      background: #161b22;
+      color: #e6edf3;
+      font-family: inherit;
+      font-size: 1.6rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .12s, border-color .12s, transform .1s;
+      -webkit-tap-highlight-color: transparent;
+      min-height: 0;
+    }
+
+    .btn-remote:active {
+      transform: scale(0.97);
+    }
+
+    .btn-prev {
+      border-color: #58a6ff;
+      background: rgba(88, 166, 255, .08);
+    }
+
+    .btn-prev:active {
+      background: rgba(88, 166, 255, .25);
+    }
+
+    .btn-next {
+      border-color: #3fb950;
+      background: rgba(63, 185, 80, .08);
+    }
+
+    .btn-next:active {
+      background: rgba(63, 185, 80, .25);
+    }
+
+    /* ---- Error / connecting states ---- */
+    .state-message {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .state-message .icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .state-message p {
+      color: #8b949e;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .state-message .error-text {
+      color: #f85149;
+    }
+
+    .retry-btn {
+      margin-top: 1rem;
+      padding: .6rem 2rem;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      background: #21262d;
+      color: #e6edf3;
+      font-family: inherit;
+      font-size: .95rem;
+      cursor: pointer;
+    }
+
+    /* Hide sections by default */
+    .controls { display: none; }
+    .controls.visible {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Connecting state -->
+  <div class="container" id="connecting-view">
+    <div class="state-message">
+      <div class="icon">📡</div>
+      <p>Connecting to presentation…</p>
+    </div>
+  </div>
+
+  <!-- Error state -->
+  <div class="container" id="error-view" style="display:none">
+    <div class="state-message">
+      <div class="icon">⚠️</div>
+      <p class="error-text" id="error-text">Connection failed</p>
+      <button class="retry-btn" id="retry-btn">Retry</button>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="container" id="controls-view" style="display:none">
+    <div class="header">
+      <h1>PDF Presentation Tool Remote</h1>
+      <div class="status">
+        <span class="status-dot" id="status-dot"></span>
+        <span id="status-text">Connected</span>
+      </div>
+    </div>
+
+    <div class="page-indicator">
+      <div class="page-current" id="page-current">—</div>
+      <div class="page-total">/ <span id="page-total">—</span></div>
+    </div>
+
+    <div class="buttons">
+      <button class="btn-remote btn-prev" id="btn-prev">◀  PREV</button>
+      <button class="btn-remote btn-next" id="btn-next">NEXT  ▶</button>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      /* ---- Parse session ID from URL ---- */
+      const params = new URLSearchParams(location.search);
+      const sessionId = params.get('session');
+
+      if (!sessionId) {
+        showError('No session ID provided.\nScan the QR code from the presenter.');
+        return;
+      }
+
+      /* ---- DOM refs ---- */
+      const connectingView = document.getElementById('connecting-view');
+      const errorView = document.getElementById('error-view');
+      const controlsView = document.getElementById('controls-view');
+      const errorText = document.getElementById('error-text');
+      const retryBtn = document.getElementById('retry-btn');
+
+      const pageCurrent = document.getElementById('page-current');
+      const pageTotal = document.getElementById('page-total');
+      const statusDot = document.getElementById('status-dot');
+      const statusText = document.getElementById('status-text');
+
+      const btnPrev = document.getElementById('btn-prev');
+      const btnNext = document.getElementById('btn-next');
+
+      let ws = null;
+      let reconnectAttempts = 0;
+      const MAX_RECONNECT = 10;
+
+      /* ---- Connect ---- */
+      function connectWS() {
+        showView('connecting');
+        reconnectAttempts++;
+
+        const proto = location.protocol === 'https:' ? 'wss' : 'ws';
+        const url = `${proto}://${location.host}/ws`;
+
+        ws = new WebSocket(url);
+
+        ws.onopen = () => {
+          ws.send(JSON.stringify({ type: 'join-session', sessionId }));
+        };
+
+        ws.onmessage = (event) => {
+          let msg;
+          try { msg = JSON.parse(event.data); } catch (_) { return; }
+
+          switch (msg.type) {
+            case 'session-joined':
+              reconnectAttempts = 0;
+              showView('controls');
+              statusDot.classList.add('connected');
+              statusText.textContent = 'Connected';
+              requestWakeLock();
+              break;
+
+            case 'state-update':
+              pageCurrent.textContent = msg.currentPage || '—';
+              pageTotal.textContent = msg.totalPages || '—';
+              break;
+
+            case 'session-closed':
+              showError('Presentation ended.');
+              break;
+
+            case 'error':
+              showError(msg.message || 'Connection error');
+              break;
+          }
+        };
+
+        ws.onerror = () => {};
+
+        ws.onclose = (event) => {
+          statusDot.classList.remove('connected');
+          statusText.textContent = 'Disconnected';
+
+          // Don't reconnect if session was explicitly closed
+          if (event.code === 4004 || event.code === 1000) {
+            showError('Session not found or ended.');
+            return;
+          }
+
+          // Auto-reconnect with backoff
+          if (reconnectAttempts < MAX_RECONNECT) {
+            const delay = Math.min(1000 * Math.pow(1.5, reconnectAttempts), 10000);
+            setTimeout(connectWS, delay);
+          } else {
+            showError('Connection lost. Please scan the QR code again.');
+          }
+        };
+      }
+
+      /* ---- Send commands ---- */
+      function sendCommand(command) {
+        if (ws && ws.readyState === 1) {
+          ws.send(JSON.stringify({ type: 'remote-command', command }));
+
+          // Brief haptic feedback if available
+          if (navigator.vibrate) navigator.vibrate(30);
+        }
+      }
+
+      btnPrev.addEventListener('click', () => sendCommand('prev'));
+      btnNext.addEventListener('click', () => sendCommand('next'));
+      retryBtn.addEventListener('click', () => {
+        reconnectAttempts = 0;
+        connectWS();
+      });
+
+      /* ---- Swipe gestures ---- */
+      let touchStartX = 0;
+      let touchStartY = 0;
+
+      document.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+      }, { passive: true });
+
+      document.addEventListener('touchend', (e) => {
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        const dy = e.changedTouches[0].clientY - touchStartY;
+
+        // Only trigger if horizontal swipe > 60px and more horizontal than vertical
+        if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+          if (dx < 0) sendCommand('next');
+          else sendCommand('prev');
+        }
+      }, { passive: true });
+
+      /* ---- Volume key support (best-effort) ---- */
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'AudioVolumeUp' || e.key === 'VolumeUp') {
+          e.preventDefault();
+          sendCommand('next');
+        } else if (e.key === 'AudioVolumeDown' || e.key === 'VolumeDown') {
+          e.preventDefault();
+          sendCommand('prev');
+        } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+          e.preventDefault();
+          sendCommand('next');
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          sendCommand('prev');
+        }
+      });
+
+      /* ---- Wake lock (keep screen on) ---- */
+      let wakeLock = null;
+
+      async function requestWakeLock() {
+        if ('wakeLock' in navigator) {
+          try {
+            wakeLock = await navigator.wakeLock.request('screen');
+            wakeLock.addEventListener('release', () => { wakeLock = null; });
+          } catch (_) {}
+        }
+      }
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible' && !wakeLock) {
+          requestWakeLock();
+        }
+      });
+
+      /* ---- View switching ---- */
+      function showView(name) {
+        connectingView.style.display = name === 'connecting' ? '' : 'none';
+        errorView.style.display = name === 'error' ? '' : 'none';
+        controlsView.style.display = name === 'controls' ? '' : 'none';
+      }
+
+      function showError(message) {
+        errorText.textContent = message;
+        showView('error');
+      }
+
+      /* ---- Start ---- */
+      connectWS();
+    })();
+  </script>
+</body>
+</html>

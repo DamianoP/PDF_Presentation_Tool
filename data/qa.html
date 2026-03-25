@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0d1117">
+
+  <title>PDF Presentation Tool — Q&A</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    /* ---- Header ---- */
+    .header {
+      padding: 1rem 1.2rem;
+      text-align: center;
+      flex-shrink: 0;
+      border-bottom: 1px solid #30363d;
+    }
+
+    .header h1 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #e6edf3;
+      letter-spacing: .03em;
+    }
+
+    .header p {
+      font-size: .82rem;
+      color: #8b949e;
+      margin-top: .3rem;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      margin-top: .4rem;
+      font-size: .85rem;
+      color: #8b949e;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #f85149;
+      transition: background .3s;
+    }
+
+    .status-dot.connected {
+      background: #3fb950;
+      box-shadow: 0 0 8px rgba(63, 185, 80, .5);
+    }
+
+    /* ---- Form ---- */
+    .qa-form {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 1.2rem 1rem;
+      gap: 1rem;
+    }
+
+    .qa-textarea {
+      flex: 1;
+      min-height: 120px;
+      max-height: 300px;
+      padding: 1rem;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      background: #161b22;
+      color: #e6edf3;
+      font-family: inherit;
+      font-size: 1rem;
+      line-height: 1.5;
+      resize: none;
+      outline: none;
+      transition: border-color .2s;
+    }
+
+    .qa-textarea:focus {
+      border-color: #58a6ff;
+    }
+
+    .qa-textarea::placeholder {
+      color: #484f58;
+    }
+
+    .char-count {
+      text-align: right;
+      font-size: .78rem;
+      color: #656d76;
+      margin-top: -.5rem;
+    }
+
+    .char-count.over {
+      color: #f85149;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 1rem;
+      border: none;
+      border-radius: 12px;
+      background: #58a6ff;
+      color: #0d1117;
+      font-family: inherit;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s, transform .1s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn-submit:active {
+      transform: scale(0.97);
+    }
+
+    .btn-submit:disabled {
+      background: #21262d;
+      color: #484f58;
+      cursor: not-allowed;
+    }
+
+    /* ---- Success state ---- */
+    .success-msg {
+      display: none;
+      text-align: center;
+      padding: 2rem 1rem;
+    }
+
+    .success-msg.visible {
+      display: block;
+    }
+
+    .success-icon {
+      font-size: 3.5rem;
+      margin-bottom: .75rem;
+    }
+
+    .success-text {
+      font-size: 1.1rem;
+      color: #3fb950;
+      font-weight: 600;
+    }
+
+    .success-sub {
+      font-size: .88rem;
+      color: #8b949e;
+      margin-top: .3rem;
+    }
+
+    /* ---- Error / connecting states ---- */
+    .state-message {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .state-message .icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .state-message p {
+      color: #8b949e;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .state-message .error-text {
+      color: #f85149;
+    }
+
+    .retry-btn {
+      margin-top: 1rem;
+      padding: .6rem 2rem;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      background: #21262d;
+      color: #e6edf3;
+      font-family: inherit;
+      font-size: .95rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Connecting state -->
+  <div class="container" id="connecting-view">
+    <div class="state-message">
+      <div class="icon">📡</div>
+      <p>Connecting to presentation…</p>
+    </div>
+  </div>
+
+  <!-- Error state -->
+  <div class="container" id="error-view" style="display:none">
+    <div class="state-message">
+      <div class="icon">⚠️</div>
+      <p class="error-text" id="error-text">Connection failed</p>
+      <button class="retry-btn" id="retry-btn">Retry</button>
+    </div>
+  </div>
+
+  <!-- Q&A form -->
+  <div class="container" id="qa-view" style="display:none">
+    <div class="header">
+      <h1>Ask a Question</h1>
+      <p>Your question will be sent anonymously to the presenter</p>
+      <div class="status">
+        <span class="status-dot" id="status-dot"></span>
+        <span id="status-text">Connected</span>
+      </div>
+    </div>
+
+    <div class="qa-form">
+      <textarea class="qa-textarea" id="qa-textarea" placeholder="Type your question here…" maxlength="300"></textarea>
+      <div class="char-count" id="char-count">0 / 300</div>
+      <button class="btn-submit" id="btn-submit" disabled>Send Question</button>
+
+      <div class="success-msg" id="success-msg">
+        <div class="success-icon">✅</div>
+        <div class="success-text">Question sent!</div>
+        <div class="success-sub">The presenter will see it shortly.</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const MAX_CHARS = 300;
+
+      /* ---- DOM refs (must be before any function calls) ---- */
+      const connectingView = document.getElementById('connecting-view');
+      const errorView = document.getElementById('error-view');
+      const qaView = document.getElementById('qa-view');
+      const errorText = document.getElementById('error-text');
+      const retryBtn = document.getElementById('retry-btn');
+
+      const statusDot = document.getElementById('status-dot');
+      const statusText = document.getElementById('status-text');
+      const textarea = document.getElementById('qa-textarea');
+      const charCount = document.getElementById('char-count');
+      const btnSubmit = document.getElementById('btn-submit');
+      const successMsg = document.getElementById('success-msg');
+
+      /* ---- Parse session ID from URL ---- */
+      const params = new URLSearchParams(location.search);
+      const sessionId = params.get('session');
+
+      if (!sessionId) {
+        showError('No session ID provided.\nScan the QR code from the presenter.');
+        return;
+      }
+
+      let ws = null;
+      let reconnectAttempts = 0;
+      const MAX_RECONNECT = 10;
+
+      /* ---- Connect ---- */
+      function connectWS() {
+        showView('connecting');
+        reconnectAttempts++;
+
+        const proto = location.protocol === 'https:' ? 'wss' : 'ws';
+        const url = `${proto}://${location.host}/ws`;
+
+        ws = new WebSocket(url);
+
+        ws.onopen = () => {
+          ws.send(JSON.stringify({ type: 'join-qa', sessionId }));
+        };
+
+        ws.onmessage = (event) => {
+          let msg;
+          try { msg = JSON.parse(event.data); } catch (_) { return; }
+
+          switch (msg.type) {
+            case 'qa-joined':
+              reconnectAttempts = 0;
+              showView('qa');
+              statusDot.classList.add('connected');
+              statusText.textContent = 'Connected';
+              break;
+
+            case 'session-closed':
+              showError('Presentation ended.');
+              break;
+
+            case 'error':
+              showError(msg.message || 'Connection error');
+              break;
+          }
+        };
+
+        ws.onerror = () => {};
+
+        ws.onclose = (event) => {
+          statusDot.classList.remove('connected');
+          statusText.textContent = 'Disconnected';
+
+          if (event.code === 4004 || event.code === 1000) {
+            showError('Session not found or ended.');
+            return;
+          }
+
+          if (reconnectAttempts < MAX_RECONNECT) {
+            const delay = Math.min(1000 * Math.pow(1.5, reconnectAttempts), 10000);
+            setTimeout(connectWS, delay);
+          } else {
+            showError('Connection lost. Please scan the QR code again.');
+          }
+        };
+      }
+
+      /* ---- Character count ---- */
+      textarea.addEventListener('input', () => {
+        const len = textarea.value.length;
+        charCount.textContent = `${len} / ${MAX_CHARS}`;
+        charCount.classList.toggle('over', len >= MAX_CHARS);
+        btnSubmit.disabled = len === 0 || len > MAX_CHARS;
+      });
+
+      /* ---- Send question ---- */
+      btnSubmit.addEventListener('click', () => {
+        const text = textarea.value.trim();
+        if (!text || text.length > MAX_CHARS) return;
+        if (!ws || ws.readyState !== 1) return;
+
+        ws.send(JSON.stringify({ type: 'qa-submit', text }));
+
+        // Show success feedback
+        textarea.value = '';
+        charCount.textContent = '0 / ' + MAX_CHARS;
+        btnSubmit.disabled = true;
+        successMsg.classList.add('visible');
+
+        setTimeout(() => {
+          successMsg.classList.remove('visible');
+        }, 2500);
+
+        // Haptic feedback
+        if (navigator.vibrate) navigator.vibrate(30);
+      });
+
+      retryBtn.addEventListener('click', () => {
+        reconnectAttempts = 0;
+        connectWS();
+      });
+
+      /* ---- View switching ---- */
+      function showView(name) {
+        connectingView.style.display = name === 'connecting' ? '' : 'none';
+        errorView.style.display = name === 'error' ? '' : 'none';
+        qaView.style.display = name === 'qa' ? '' : 'none';
+      }
+
+      function showError(message) {
+        errorText.textContent = message;
+        showView('error');
+      }
+
+      /* ---- Start ---- */
+      connectWS();
+    })();
+  </script>
+</body>
+</html>
