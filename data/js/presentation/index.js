@@ -26,6 +26,16 @@ function initComm() {
       _presenterSync: true,
     });
   }
+
+  setInterval(() => {
+    if (window.opener && window.opener.closed) {
+      setTimeout(() => {
+        if (window.opener && window.opener.closed) {
+          window.close();
+        }
+      }, 1000);
+    }
+  }, 1000);
 }
 
 function handleMessage(data) {
