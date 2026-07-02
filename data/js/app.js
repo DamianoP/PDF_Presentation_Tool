@@ -16,7 +16,7 @@ import { uiState } from './presenter/uiState.js';
 /* ------------------------------------------------------------------ */
 /*  Boot                                                               */
 /* ------------------------------------------------------------------ */
-const APP_VERSION = '20260315-154122';
+const APP_VERSION = '20260701-125431';
 console.log('[app] App version:', APP_VERSION);
 export default function initApp() {
   // Configure PDF.js worker
