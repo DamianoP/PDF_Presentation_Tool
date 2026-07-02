@@ -286,5 +286,18 @@ document.addEventListener('click', () => {
   }
 });
 
+// Double check for closing the presentation if the presenter window is closed
+let openerLostCount = 0;
+setInterval(() => {
+  if (!window.opener || window.opener.closed) {
+    openerLostCount++;
+    if (openerLostCount >= 2) {
+      window.close();
+    }
+  } else {
+    openerLostCount = 0;
+  }
+}, 1000);
+
 // Init
 initComm();
