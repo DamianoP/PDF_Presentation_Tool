@@ -28,7 +28,7 @@ const AppState = {
   isBlackoutActive: false,
   selectedScreen: null,
   isFullscreen: false,
-  transitionType: localStorage.getItem('ppt_transitionType') || 'none',
+  transitionType: localStorage.getItem('ppt_transitionType') || 'fade',
 
   /* ---- Extra Features ---- */
   captionsEnabled: false,

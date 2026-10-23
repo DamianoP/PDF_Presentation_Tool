@@ -22,7 +22,7 @@ const app = express();
 /*  Gestione Contatore Visite (/connections.txt)                       */
 /* ------------------------------------------------------------------ */
 
-const CONNECTIONS_FILE = '/connectionsCounter.txt';
+const CONNECTIONS_FILE = path.join(__dirname, 'connectionsCounter.txt');
 let totalConnections = 0;
 
 // 1. On server start, read the file to retrieve the saved value

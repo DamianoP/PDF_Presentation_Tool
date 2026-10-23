@@ -107,14 +107,18 @@
           </div>
         </div>
         <div id="slides-splitter" class="splitter-v" title="Drag to resize"></div>
-        <div id="next-slide-container">
-          <div class="section-label" id="next-slide-header">
-            <span>Next Item</span>
-            <button id="next-slide-collapse" class="collapse-btn" title="Toggle Next Slide">▶</button>
+
+        <!-- Right panel containing Next Slide and optionally Notes -->
+        <div id="right-panel">
+          <div id="next-slide-container">
+            <div class="section-label" id="next-slide-header">
+              <span>Next Item</span>
+              <button id="next-slide-collapse" class="collapse-btn" title="Toggle Next Slide">▶</button>
+            </div>
+            <canvas id="next-slide-canvas"></canvas>
+            <video id="next-slide-video" style="display:none; width: 100%; height: 100%; object-fit: contain; pointer-events: none;" muted></video>
+            <img id="next-slide-image" style="display:none; width: 100%; height: 100%; object-fit: contain;">
           </div>
-          <canvas id="next-slide-canvas"></canvas>
-          <video id="next-slide-video" style="display:none; width: 100%; height: 100%; object-fit: contain; pointer-events: none;" muted></video>
-          <img id="next-slide-image" style="display:none; width: 100%; height: 100%; object-fit: contain;">
         </div>
       </div>
 
@@ -129,6 +133,7 @@
             <span>Notes</span>
           </div>
           <div id="notes-zoom">
+            <button id="notes-position-toggle" class="btn-icon" title="Move Notes Panel" style="margin-right: 8px;">⇕</button>
             <button id="notes-zoom-out" class="btn-icon" title="Zoom Out">−</button>
             <button id="notes-zoom-reset" class="btn-icon" title="Reset Zoom">⟲</button>
             <button id="notes-zoom-in" class="btn-icon" title="Zoom In">+</button>

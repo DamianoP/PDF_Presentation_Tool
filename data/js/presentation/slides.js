@@ -45,8 +45,12 @@ function captureForFade() {
 function triggerFadeOut(overlay) {
   if (!overlay) return;
   requestAnimationFrame(() => {
-    overlay.classList.add('slide-fade-out');
-    setTimeout(() => overlay.remove(), 400); 
+    // Force reflow to ensure the initial opacity is applied before the transition starts
+    void overlay.offsetWidth;
+    requestAnimationFrame(() => {
+      overlay.classList.add('slide-fade-out');
+      setTimeout(() => overlay.remove(), 400);
+    });
   });
 }
 
