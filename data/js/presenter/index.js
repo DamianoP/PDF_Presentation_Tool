@@ -92,7 +92,10 @@ function bindEvents() {
   els.sidebarHeader?.addEventListener('click', () => toggleSidebarCollapse());
 
   els.nextSlideCollapse?.addEventListener('click', (e) => { e.stopPropagation(); toggleNextSlideCollapse(); });
-  els.nextSlideContainer?.addEventListener('click', () => toggleNextSlideCollapse());
+  els.nextSlideContainer?.addEventListener('click', (e) => {
+    if (!uiState.nextSlideCollapsed) return; // Only toggle when collapsed
+    toggleNextSlideCollapse();
+  });
   //els.nextSlideHeader?.addEventListener('click', () => toggleNextSlideCollapse());
 
   document.addEventListener('keydown', handleKeyDown);
