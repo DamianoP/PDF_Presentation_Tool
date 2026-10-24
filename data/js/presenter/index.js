@@ -4,7 +4,7 @@ import timer from '../timer.js';
 import remoteManager from '../remoteManager.js';
 import { els, cacheElements } from './elements.js';
 import { uiState } from './uiState.js';
-import { initSplitter, initSidebarSplitter, applySplitLayout, toggleNotesCollapse, toggleSidebarCollapse, toggleNextSlideCollapse } from './splitters.js';
+import { initSplitter, initSidebarSplitter, applySplitLayout, toggleNotesCollapse, toggleSidebarCollapse, toggleNextSlideCollapse, toggleNotesPosition } from './splitters.js';
 import { navigateTo, renderAllPreviews, setNotesZoom } from './slides.js';
 import { handleScreenSwitch, handleStartPresentation } from './screens.js';
 import { toggleBlackout, clearPresenterDrawing, syncPresenterDrawCanvas } from './tools.js';
@@ -58,6 +58,8 @@ function bindEvents() {
   els.notesZoomOut?.addEventListener('click', () => setNotesZoom(uiState.notesZoom - 0.15));
   els.notesZoomReset?.addEventListener('click', () => setNotesZoom(1.0));
 
+  els.notesPositionToggle?.addEventListener('click', () => toggleNotesPosition());
+
   els.notesCollapse?.addEventListener('click', (e) => { e.stopPropagation(); toggleNotesCollapse(); });
   els.notesHeader?.addEventListener('click', (e) => { if (!e.target.closest('#notes-zoom')) toggleNotesCollapse(); });
 
@@ -90,7 +92,10 @@ function bindEvents() {
   els.sidebarHeader?.addEventListener('click', () => toggleSidebarCollapse());
 
   els.nextSlideCollapse?.addEventListener('click', (e) => { e.stopPropagation(); toggleNextSlideCollapse(); });
-  els.nextSlideContainer?.addEventListener('click', () => toggleNextSlideCollapse());
+  els.nextSlideContainer?.addEventListener('click', (e) => {
+    if (!uiState.nextSlideCollapsed) return; // Only toggle when collapsed
+    toggleNextSlideCollapse();
+  });
   //els.nextSlideHeader?.addEventListener('click', () => toggleNextSlideCollapse());
 
   document.addEventListener('keydown', handleKeyDown);

@@ -3,6 +3,7 @@ export const uiState = {
   contentSplitRatio: 0.55,
   notesZoom: 1.2,
   notesCollapsed: true,
+  notesPosition: 'bottom', // 'bottom' or 'sidebar'
   sidebarCollapsed: false,
   nextSlideCollapsed: false,
   laserActive: false,

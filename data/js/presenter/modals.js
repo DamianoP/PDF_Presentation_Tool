@@ -51,9 +51,9 @@ export function showHelpModal() {
   document.body.appendChild(modal);
 
   const transitionSelect = document.getElementById('transition-select');
-  // Load value from window.state or assume 'none' by default
-  const currentState = window.AppState ? window.AppState.transitionType : 'none';
-  transitionSelect.value = currentState || 'none';
+  // Load value from window.state or assume 'fade' by default
+  const currentState = window.AppState ? window.AppState.transitionType : 'fade';
+  transitionSelect.value = currentState || 'fade';
   
   transitionSelect.addEventListener('change', (e) => {
     if (window.AppState) {

@@ -65,6 +65,29 @@ export function applySplitLayout() {
   root.style.setProperty('--content-split', `${uiState.contentSplitRatio * 100}%`);
 }
 
+export function toggleNotesPosition() {
+  uiState.notesPosition = uiState.notesPosition === 'bottom' ? 'sidebar' : 'bottom';
+  applyNotesPosition();
+}
+
+export function applyNotesPosition() {
+  if (uiState.notesPosition === 'sidebar') {
+    document.body.classList.add('notes-in-sidebar');
+    if (els.rightPanel && els.contentSplitter && els.notesArea) {
+      els.rightPanel.appendChild(els.contentSplitter);
+      els.rightPanel.appendChild(els.notesArea);
+    }
+  } else {
+    document.body.classList.remove('notes-in-sidebar');
+    if (els.mainContent && els.contentSplitter && els.notesArea) {
+      els.mainContent.appendChild(els.contentSplitter);
+      els.mainContent.appendChild(els.notesArea);
+    }
+  }
+  // Let the DOM update then force re-render
+  setTimeout(() => renderAllPreviews(), 50);
+}
+
 export function initSidebarSplitter(splitterEl) {
   if (!splitterEl) return;
 
